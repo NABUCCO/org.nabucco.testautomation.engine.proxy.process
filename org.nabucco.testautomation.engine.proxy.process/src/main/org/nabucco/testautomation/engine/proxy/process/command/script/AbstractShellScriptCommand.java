@@ -63,4 +63,12 @@ public abstract class AbstractShellScriptCommand extends AbstractProxyCommand
 		logger.error(msg);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void warning(String msg) {
+		logger.warning(msg);
+	}
+
 }

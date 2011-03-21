@@ -47,7 +47,7 @@ public class UploadCommand extends AbstractFTPCommand {
 
 		FileProperty fileProperty = getFile(metadata, properties);
 		
-		String filename = fileProperty.getName().getValue();
+		String filename = fileProperty.getFilename().getValue();
 		String content = fileProperty.getContent().getValue();
 		
 		if (isConnected()) {

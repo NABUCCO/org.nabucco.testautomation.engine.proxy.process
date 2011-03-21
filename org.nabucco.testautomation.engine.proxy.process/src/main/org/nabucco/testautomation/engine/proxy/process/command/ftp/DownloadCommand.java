@@ -52,7 +52,7 @@ public class DownloadCommand extends AbstractFTPCommand {
 			info("Download of file: " + filename);
 			start();
 			BufferedInputStream in = new BufferedInputStream(getFTPClient().retrieveFileStream(filename));
-			FileProperty fileProperty = receiveFile(filename, in);
+			FileProperty fileProperty = receiveFile(metadata, filename, in);
 			getFTPClient().completePendingCommand();
 			stop();
 			
@@ -68,7 +68,7 @@ public class DownloadCommand extends AbstractFTPCommand {
 	 * @param in
 	 * @return
 	 */
-	private FileProperty receiveFile(String filename, BufferedInputStream in) throws FTPException {
+	private FileProperty receiveFile(Metadata metadata, String filename, BufferedInputStream in) throws FTPException {
 		
 		try {
 			int c;
@@ -82,7 +82,8 @@ public class DownloadCommand extends AbstractFTPCommand {
 			String content = new String(out.toByteArray());
 			FileProperty file = (FileProperty) PropertyFactory.getInstance()
 					.produceProperty(PropertyType.FILE);
-			file.setName(filename);
+			file.setName(metadata.getName());
+			file.setFilename(filename);
 			file.setContent(content);
 			return file;
 		} catch (IOException ex) {

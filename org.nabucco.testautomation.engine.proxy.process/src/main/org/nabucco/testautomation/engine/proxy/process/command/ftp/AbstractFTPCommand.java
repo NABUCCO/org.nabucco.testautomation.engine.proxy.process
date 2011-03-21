@@ -89,6 +89,11 @@ public abstract class AbstractFTPCommand extends AbstractProxyCommand implements
 		logger.error(msg);
 	}
 
+	@Override
+	protected void warning(String msg) {
+		logger.warning(msg);
+	}
+
 	protected void setCommandListener() {
 		this.client.addProtocolCommandListener(this);
 	}

@@ -16,9 +16,11 @@
 */
 package org.nabucco.testautomation.engine.proxy.process.command.ftp;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 import org.nabucco.testautomation.engine.base.util.PropertyHelper;
 import org.nabucco.testautomation.engine.proxy.process.exeption.FTPException;
 
@@ -46,32 +48,32 @@ public class ListFilesCommand extends AbstractFTPCommand {
 		
 		if (isConnected()) {
 			String pathname = getPathname(metadata, properties);
-			String[] fileNames = null;
+			FTPFile[] files = null;
 			
 			if (pathname == null) {
 				pathname = getFTPClient().printWorkingDirectory();
 				info("List files of current directory: " + pathname);
 				start();
-				fileNames = getFTPClient().listNames();
+				files = getFTPClient().listFiles(pathname);
 				stop();
 			} else {
 				info("List files of directory: " + pathname);
 				start();
-				fileNames = getFTPClient().listNames(pathname);
+				files = getFTPClient().listFiles(pathname);
 				stop();
 			}
 			
 			PropertyList returnProperties = PropertyHelper.createPropertyList(RETURN_PROPERTIES);
-			addFileList(pathname, fileNames, returnProperties);
+			addFileList(pathname, files, returnProperties);
 			return returnProperties;
 		} else {
 			throw new FTPException("Cannot list files. Cause: Not connected");
 		}
 	}
 	
-	private void addFileList(String pathname, String[] fileNames, PropertyList properties) throws FTPException {
+	private void addFileList(String pathname, FTPFile[] files, PropertyList properties) throws FTPException {
 		
-		if (fileNames == null) {
+		if (files == null) {
 			throw new FTPException("No fileList received");
 		}
 		
@@ -80,11 +82,11 @@ public class ListFilesCommand extends AbstractFTPCommand {
 		add(directory, properties);
 		int i = 0;
 		
-		for (String fileName : fileNames) {
-			debug("File " + i + ": " + fileName);
+		for (FTPFile file : files) {
+			debug("File " + i + ": " + file.getName());
 			StringProperty prop =  (StringProperty) PropertyFactory.getInstance().produceProperty(PropertyType.STRING);
 			prop.setName("" + i++);
-			prop.setValue(fileName);
+			prop.setValue(new File(file.getName()).getName());
 			add(prop, directory);
 		}
 	}
